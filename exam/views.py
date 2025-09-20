@@ -831,3 +831,4 @@ class ExamResultView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
     def handle_no_permission(self):
         messages.error(self.request, 'Access denied.')
         return redirect('exam:dashboard')
+

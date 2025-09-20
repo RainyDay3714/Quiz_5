@@ -11,7 +11,6 @@ from .views import (
     StartExamView,
     TakeExamView,
     ExamResultView,
-    debug_timezone_view
 )
 
 app_name = 'exam'
@@ -31,5 +30,5 @@ urlpatterns = [
     path('take/<int:submission_id>/', TakeExamView.as_view(), name='take_exam'),
     path('result/<int:submission_id>/', ExamResultView.as_view(), name='exam_result'),
     
-    path('debug-timezone/', debug_timezone_view, name='debug_timezone'),
+    #path('debug-timezone/', debug_timezone_view, name='debug_timezone'),
 ]
