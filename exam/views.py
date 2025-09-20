@@ -51,7 +51,7 @@ class TeacherDashboardView(LoginRequiredMixin, ListView):
     
     def get_queryset(self):
         from django.db.models import Case, When, IntegerField
-        
+
         now = timezone.now()
         
         # Get all exams created by this teacher with priority ordering
@@ -95,7 +95,7 @@ class TeacherDashboardView(LoginRequiredMixin, ListView):
         
         now = timezone.now()
         queryset = Exam.objects.filter(teacher=self.request.user)
-        
+
         context['total_exams'] = queryset.count()
         
         # Count exams by their actual status (not just is_active field)
@@ -465,6 +465,18 @@ class ExamDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
                 status = 'Not Started'
                 score_display = 'Did not take yet'
                 submitted_at = None
+
+            except ExamSubmission.MultipleObjectsReturned:
+                submissions = ExamSubmission.objects.filter(exam=exam, student=student).order_by('-submitted_at')
+                submission = submissions.first()
+                if submission.is_completed:
+                    status = 'Completed'
+                    score_display = f"{submission.score}/{submission.total_marks} ({submission.percentage:.1f}%)"
+                    submitted_at = submission.submitted_at
+                else:
+                    status = 'In Progress'
+                    score_display = 'In Progress'
+                    submitted_at = None
             
             student_data.append({
                 'student': student,
